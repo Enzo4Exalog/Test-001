@@ -2,12 +2,6 @@ body {
     background-color: white;
     }
 
-.shadow-box {
-width: 400px;
-height: 200px;
-background-color: #77b5fe ;
-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
 ul {
 list-style-type: none;
 margin: 0;
