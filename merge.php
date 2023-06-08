@@ -1,9 +1,9 @@
 <?php
-
+echo "1";
 var_dump($_POST['submit']);
 var_dump($_POST['nomBranche']);
 if(isset($_POST['submit'])){
-    $repository_path = "apache/htdocs/etomasso/ProjetFusion/bitbu/bankx-sandbox"; // Chemin du référentiel Git
+    $repository_path = "/apache/htdocs/exalogv428/etomasso/Branche/bankx"; // Chemin du référentiel Git
 
     // Vérifier si le répertoire spécifié est un référentiel Git valide
     if (is_dir($repository_path . "/.git")) {
@@ -11,8 +11,8 @@ if(isset($_POST['submit'])){
         chdir($repository_path);
 
         // Récupérer les valeurs du formulaire
-        $branch1 = $_POST['branch1'];
-        $branch2 = $_POST['branch2'];
+        $branch1 = $_POST['selectBranche1'];
+        $branch2 = $_POST['selectBranche2'];
         $nomBranche = $_POST['nomBranche'];
 
         // Vérifier si la branche de destination existe déjà
