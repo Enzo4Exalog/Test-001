@@ -3,7 +3,7 @@ echo "1";
 var_dump($_POST['submit']);
 var_dump($_POST['nomBranche']);
 if(isset($_POST['submit'])){
-    $repository_path = "/apache/htdocs/exalogv428/etomasso/Branche/bankx"; // Chemin du référentiel Git
+    $repository_path = "/apache/htdocs/exalogv428/etomasso/Branche/bankx-sandbox"; // Chemin du référentiel Git
 
     // Vérifier si le répertoire spécifié est un référentiel Git valide
     if (is_dir($repository_path . "/.git")) {
@@ -21,8 +21,17 @@ if(isset($_POST['submit'])){
         var_dump($output_check_branch);
 
         if (empty($output_check_branch)) {
+            // Ancêtres communs
+            $command_merge = "git merge-base $branch2 $branch1";
+             $output_merge = shell_exec($command_merge);
+             var_dump($output_merge);
+
+             $command_merge = "git merge $branche1 $branch2";
+             $output_merge = shell_exec($command_merge);
+             var_dump($output_merge);
+
             // Créer une nouvelle branche à partir de branch1
-            $command_create_branch = "git branch $nomBranche $branch1";
+            $command_create_branch = "git branch $nomBranche";
             $output_create_branch = shell_exec($command_create_branch);
             var_dump($output_create_branch);
 
@@ -30,11 +39,6 @@ if(isset($_POST['submit'])){
             $command_checkout_branch = "git checkout $nomBranche";
             $output_checkout_branch = shell_exec($command_checkout_branch);
             var_dump($output_checkout_branch);
-
-            // Fusionner les branches
-            $command_merge = "git merge-base $branch2";
-            $output_merge = shell_exec($command_merge);
-            var_dump($output_merge);
 
             // Effectuer le commit des modifications de fusion
             $commit_message = "Commit de fusion de $branch1 avec $branch2";
