@@ -22,39 +22,44 @@ if(isset($_POST['submit'])){
 
         if (empty($output_check_branch)) {
             // Ancêtres communs
-            $command_merge = "git merge-base $branch2 $branch1";
-             $output_merge = shell_exec($command_merge);
-             var_dump($output_merge);
+            $command_merge_base = "git merge-base $branch2 $branch1";
+            $output_merge_base = trim(shell_exec($command_merge_base));
+            var_dump($output_merge_base);
 
-             $command_merge = "git merge $branche1 $branch2";
-             $output_merge = shell_exec($command_merge);
-             var_dump($output_merge);
+            // Effectuer la fusion
+            $command_merge = "git merge $branch2";
+            $output_merge = shell_exec($command_merge);
+            var_dump($output_merge);
 
-            // Créer une nouvelle branche à partir de branch1
-            $command_create_branch = "git branch $nomBranche";
-            $output_create_branch = shell_exec($command_create_branch);
-            var_dump($output_create_branch);
+            if (strpos($output_merge, 'CONFLICT') === false) {
+                // Pas de conflits, créer une nouvelle branche à partir de branch1
+                $command_create_branch = "git branch $nomBranche $branch1";
+                $output_create_branch = shell_exec($command_create_branch);
+                var_dump($output_create_branch);
 
-            // Basculer vers la nouvelle branche
-            $command_checkout_branch = "git checkout $nomBranche";
-            $output_checkout_branch = shell_exec($command_checkout_branch);
-            var_dump($output_checkout_branch);
+                // Basculer vers la nouvelle branche
+                $command_checkout_branch = "git checkout $nomBranche";
+                $output_checkout_branch = shell_exec($command_checkout_branch);
+                var_dump($output_checkout_branch);
 
-            // Effectuer le commit des modifications de fusion
-            $commit_message = "Commit de fusion de $branch1 avec $branch2";
-            $command_commit = "git commit -am '$commit_message'";
-            $output_commit = shell_exec($command_commit);
-            var_dump($output_commit);  
+                // Effectuer le commit des modifications de fusion
+                $commit_message = "Commit de fusion de $branch1 avec $branch2";
+                $command_commit = "git commit -am '$commit_message'";
+                $output_commit = shell_exec($command_commit);
+                var_dump($output_commit);
 
-            // Obtenir les commits entre les branches fusionnées
-            $command_log = "git log --oneline $branch1..$branch2";
-            $output_log = shell_exec($command_log);
-            var_dump($output_log);
+                // Obtenir les commits entre les branches fusionnées
+                $command_log = "git log --oneline $branch1..$branch2";
+                $output_log = shell_exec($command_log);
+                var_dump($output_log);
 
-            // Afficher les résultats
-            echo "<h2>Nouvelle branche '$nomBranche' créée et activée.</h2>";
-            echo "<h2>Commits :</h2>";
-            echo "<pre>$output_log</pre>";
+                // Afficher les résultats
+                echo "<h2>Nouvelle branche '$nomBranche' créée et activée.</h2>";
+                echo "<h2>Commits :</h2>";
+                echo "<pre>$output_log</pre>";
+            } else {
+                echo "<h2>La fusion a échoué en raison de conflits. Veuillez résoudre les conflits manuellement.</h2>";
+            }
         } else {
             echo "<h2>La branche '$nomBranche' existe déjà.</h2>";
         }
