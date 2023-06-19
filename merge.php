@@ -1,46 +1,89 @@
 <?php
-echo "1";
-var_dump($_POST['submit']);
-var_dump($_POST['nomBranche']);
-if(isset($_POST['submit'])){
-    $repository_path = "/apache/htdocs/exalogv428/etomasso/Branche/bankx-sandbox"; // Chemin du référentiel Git
+    echo "1";
+    var_dump($_POST['submit']);
+    echo "<br>";
+    var_dump($_POST['nomBranche']);
+    echo "<br>";
+    var_dump($_POST['selectBranche1']);
+    echo "<br>";
+    var_dump($_POST['selectBranche2']);
+    echo "<br>";
 
+    if(isset($_POST['submit'])){
+        // Chemin du référentiel Git
+        $repository_path = "/apache/htdocs/exalogv428/etomasso/Branche";
+        $user ="etomasso";
+        $repo_url="https://webhook:Nzc3MDM2ODM5NzQzOjKx+GyGOlxvpdcLT0yBtfmtX7QO@bitbucket.fr.exalog.net/scm/bankx/bankx-sandbox.git";
+
+
+    // Clone du référentiel Git
+    $command_clone = "git clone $repo_url ";
+    $output_clone = shell_exec($command_clone);
+    var_dump($output_clone);
+    
+    $repository_path .= "/bankx-sandbox";
+    if (!is_dir($repository_path)){
+        echo"<h2> Le répertoire cloné n'existe pas.</h2>";
+        exit;
+    }else{
+        echo"<h2> Le répertoire a bien été cloné.</h2>";
+    }
     // Vérifier si le répertoire spécifié est un référentiel Git valide
     if (is_dir($repository_path . "/.git")) {
         // Basculer vers le répertoire du dépôt Git
         chdir($repository_path);
-
+        
         // Récupérer les valeurs du formulaire
         $branch1 = $_POST['selectBranche1'];
         $branch2 = $_POST['selectBranche2'];
         $nomBranche = $_POST['nomBranche'];
-
-        // Vérifier si la branche de destination existe déjà
+            
+                    // Vérifier si la branche de destination existe déjà
         $command_check_branch = "git rev-parse --quiet --verify $nomBranche";
         $output_check_branch = shell_exec($command_check_branch);
         var_dump($output_check_branch);
 
+        
+        
+        
         if (empty($output_check_branch)) {
-            // Ancêtres communs
-            $command_merge_base = "git merge-base $branch2 $branch1";
-            $output_merge_base = trim(shell_exec($command_merge_base));
-            var_dump($output_merge_base);
 
-            // Effectuer la fusion
-            $command_merge = "git merge $branch2";
-            $output_merge = shell_exec($command_merge);
+            $command_remote_branch = " git ls-remote --refs $repo_url | awk '{print $2}' | sed 's/refs\/heads\///' | sed 's/refs\/tags\///'";
+            $output_remote_branch = shell_exec($command_remote_branch);
+
+            // Basculer vers la branche $branch1
+            $command_checkout_branch1 = "git checkout $branch1";
+            $output_checkout_branch1 = shell_exec($command_checkout_branch1);
+            
+            echo "<br>";
+  
+
+            echo "<br>";
+
+            $command_check_branch1 = "git checkout $branch1";
+            $output_check_branch1 = shell_exec($command_check_branch1);
+            var_dump($output_check_branch1);
+
+            $command_check_branch2 = "git checkout -b $branch2";
+            $output_check_branch2 = shell_exec($command_check_branch2);
+            var_dump($output_check_branch2);
+            
+            $command_merge = "git merge-base $branch1 $branch2";
+            $output_merge_base = shell_exec($command_merge);
             var_dump($output_merge);
 
-            if (strpos($output_merge, 'CONFLICT') === false) {
-                // Pas de conflits, créer une nouvelle branche à partir de branch1
-                $command_create_branch = "git branch $nomBranche $branch1";
-                $output_create_branch = shell_exec($command_create_branch);
-                var_dump($output_create_branch);
+            if(!empty(trim($output_merge_base))){
+                                
+                    // Basculer vers la nouvelle branche-
+                    $command_checkout_branch = "git checkout -b $nomBranche";
+                    $output_checkout_branch = shell_exec($command_checkout_branch);
+                    var_dump($output_checkout_branch);
+    
+                    $command_merge = "git merge --no-ff --no-commit $branch1 $branch2";
+                    $output_merge = shell_exec($command_merge);
+                    var_dump($output_merge);
 
-                // Basculer vers la nouvelle branche
-                $command_checkout_branch = "git checkout $nomBranche";
-                $output_checkout_branch = shell_exec($command_checkout_branch);
-                var_dump($output_checkout_branch);
+                echo "<br>";
 
                 // Effectuer le commit des modifications de fusion
                 $commit_message = "Commit de fusion de $branch1 avec $branch2";
@@ -48,30 +91,38 @@ if(isset($_POST['submit'])){
                 $output_commit = shell_exec($command_commit);
                 var_dump($output_commit);
 
+                echo "<br>";
+
                 // Obtenir les commits entre les branches fusionnées
                 $command_log = "git log --oneline $branch1..$branch2";
                 $output_log = shell_exec($command_log);
-                var_dump($output_log);
+
+
+                echo "<br>";
 
                 // Afficher les résultats
                 echo "<h2>Nouvelle branche '$nomBranche' créée et activée.</h2>";
                 echo "<h2>Commits :</h2>";
                 echo "<pre>$output_log</pre>";
+
+               // Push vers le référentiel distant
+                $command_push = "git push --set-upstream $repo_url $nomBranche";
+                $output_push = shell_exec($command_push);
+                var_dump($output_push);
+
+                echo "<br>";
+
+                // Vérifier si le push a réussi
+                if (strpos($output_push, 'Everything up-to-date') !== false) {
+                    echo "<h2>Push réussi vers le référentiel distant.</h2>";
+                } else {
+                    echo "<h2>Erreur lors du push vers le référentiel distant.</h2>";
+                }
             } else {
                 echo "<h2>La fusion a échoué en raison de conflits. Veuillez résoudre les conflits manuellement.</h2>";
             }
         } else {
             echo "<h2>La branche '$nomBranche' existe déjà.</h2>";
-        }
-        $command_push = "git push --set-upstream github $nomBranche";
-        $output_push = shell_exec($command_push);
-        var_dump($output_push);
-        
-        // Vérifier si le push a réussi
-        if (strpos($output_push, 'Everything up-to-date') !== false) {
-            echo "<h2>Push réussi vers GitHub.</h2>";
-        } else {
-            echo "<h2>Erreur lors du push vers GitHub.</h2>";
         }
     } else {
         echo "<h2>Chemin du référentiel invalide.</h2>";

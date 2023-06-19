@@ -16,14 +16,15 @@
     <h1>Projet Exalog - Fusion de branches</h1>
 
     <form action="merge.php" method="POST" target="blank">
-        <select name="selectBranche1">
+        <select name="selectBranche1" id="selectBranche1">
             <option value="">Sélectionnez la branche 1</option>
             <option value="ctchelidze_BANKX-74700_BANKX-74701_from_version/bankx-v16.15.0-max">ctchelidze_BANKX-74700_BANKX-74701_from_version/bankx-v16.15.0-max</option>            
         </select>
         <br>
-        <select name="selectBranche2">
+        <select name="selectBranche2" id="selectBranche2">
             <option value="">Sélectionnez la branche 2</option>
-            <option value="athevenet_BANKX-74845_BANKX-74846_from_version/bankx-v16.15.0-max">athevenet_BANKX-74845_BANKX-74846_from_version/bankx-v16.15.0-max</option>        </select>
+            <option value="athevenet_BANKX-74845_BANKX-74846_from_version/bankx-v16.15.0-max">athevenet_BANKX-74845_BANKX-74846_from_version/bankx-v16.15.0-max</option>        
+        </select>
         <br>
         <input type="text" name="nomBranche" placeholder="Nom de la nouvelle branche">
         <br>
