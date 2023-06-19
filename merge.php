@@ -19,6 +19,7 @@
     // Clone du référentiel Git
     $command_clone = "git clone $repo_url ";
     $output_clone = shell_exec($command_clone);
+    echo "<br>";
     var_dump($output_clone);
     
     $repository_path .= "/bankx-sandbox";
@@ -41,6 +42,7 @@
                     // Vérifier si la branche de destination existe déjà
         $command_check_branch = "git rev-parse --quiet --verify $nomBranche";
         $output_check_branch = shell_exec($command_check_branch);
+        echo "<br>";
         var_dump($output_check_branch);
 
         
@@ -50,6 +52,7 @@
 
             $command_remote_branch = " git ls-remote --refs $repo_url | awk '{print $2}' | sed 's/refs\/heads\///' | sed 's/refs\/tags\///'";
             $output_remote_branch = shell_exec($command_remote_branch);
+            echo "<br>";
 
             // Basculer vers la branche $branch1
             $command_checkout_branch1 = "git checkout $branch1";
@@ -63,14 +66,17 @@
             $command_check_branch1 = "git checkout $branch1";
             $output_check_branch1 = shell_exec($command_check_branch1);
             var_dump($output_check_branch1);
+            echo "<br>";
 
             $command_check_branch2 = "git checkout -b $branch2";
             $output_check_branch2 = shell_exec($command_check_branch2);
             var_dump($output_check_branch2);
+            echo "<br>";
             
             $command_merge = "git merge-base $branch1 $branch2";
             $output_merge_base = shell_exec($command_merge);
-            var_dump($output_merge);
+            var_dump($output_merge_base);
+            echo "<br>";
 
             if(!empty(trim($output_merge_base))){
                                 
@@ -78,6 +84,7 @@
                     $command_checkout_branch = "git checkout -b $nomBranche";
                     $output_checkout_branch = shell_exec($command_checkout_branch);
                     var_dump($output_checkout_branch);
+                    echo "<br>";
     
                     $command_merge = "git merge --no-ff --no-commit $branch1 $branch2";
                     $output_merge = shell_exec($command_merge);
