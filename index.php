@@ -23,6 +23,7 @@
             padding: 0;
             overflow: hidden;
             background-color: #333;
+            
             }
             li {
             float: left;
@@ -100,7 +101,7 @@
     
         <div id="container"></div>
         <label for="branch">Choisir une branche:</label>
-            <input list="branche" id="selecBranche1" name="selecBranche1">
+            <input list="branche" id="datalist" name="datalist">
                 <datalist id="branche">
                     <option value="athevenet_BANKX-74845_BANKX-74846_from_version/bankx-v16.15.0-max">
                     <option value="amarandiuc_BANKX-65643_BANKX-65644_from_version/bankx-v16.1.0-max">
