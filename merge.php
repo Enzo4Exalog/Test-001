@@ -1,4 +1,79 @@
-<?php
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Rapport Fusion</title>
+    </head>
+    <body>
+    <ul>
+            <li><a href="index.php">Accueil</a></li>
+            <li><a href="news.asp">Comment fusionner les branches</a></li>
+            <li><a href="contact.asp">A quoi ça sert ?</a></li>
+            <li><a href="identifiant.php">Connexion</a></li>
+        </ul>
+    </body>
+</html>
+<style>
+             body {
+            animation: changeColor 10s infinite;
+            }
+        
+        @keyframes changeColor {
+            0% { background-color: #1BBDDA; }
+            25% { background-color: #FCFCFC; }
+            50% { background-color: #1BBDDA; }
+            75% { background-color: #FCFCFC; }
+            100% { background-color: #1BBDDA; }
+        }
+
+            ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+            border-radius: 30px;
+            }
+            li {
+            float: left;
+            }
+            li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            }
+            li a:hover {
+            background-color: #111;
+            }
+            .cont {
+                width: 600px;
+                padding: 20px;
+                border: 1px solid #ccc;
+                border-radius: 30px;
+                background-color: #f9f9f9;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+            .button {
+            margin-left: 500px;
+            padding: 10px 20px;
+            font-size: 16px;
+            animation: changeColor 10s infinite;
+            border: none;
+            border-radius: 25px;         
+            bottom: -30px;
+            position: relative;
+        }
+</style>
+<center>
+    <?php
+    echo "<br>";
+    echo '<h2>Voici le Rapport de la Fusion</h2>';
+    echo "<br>";
+    echo '<div class="cont">';
     echo "1";
     var_dump($_POST['submit']);
     echo "<br>";
@@ -134,5 +209,7 @@
     } else {
         echo "<h2>Chemin du référentiel invalide.</h2>";
     }
-}
-?>
+    }
+    echo '</div>';
+    ?>
+</center>
