@@ -7,12 +7,14 @@
         <title>Rapport Fusion</title>
     </head>
     <body>
-    <ul>
-            <li><a href="index.php">Accueil</a></li>
-            <li><a href="news.asp">Comment fusionner les branches</a></li>
-            <li><a href="contact.asp">A quoi ça sert ?</a></li>
-            <li><a href="identifiant.php">Connexion</a></li>
+    <ul>    
+        <li><a href="index.php">Accueil</a></li>
+        <li><a href="news.asp">Comment fusionner les branches</a></li>
+        <li><a href="contact.asp">A quoi ça sert ?</a></li>
+        <li><a href="identifiant.php">Connexion</a></li>
         </ul>
+        <div class="arrow"></div>
+        <div>
     </body>
 </html>
 <style>
@@ -67,28 +69,52 @@
             bottom: -30px;
             position: relative;
         }
+        .arrow {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .arrow::before {
+            content: "";
+            position: absolute;
+            top: 15%;
+            left: 35%;
+            transform: translate(-50%, -50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 30px solid red;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            30% { opacity: 0; }
+        }
 </style>
 <center>
-    <?php
-    echo "<br>";
-    echo '<h2>Voici le Rapport de la Fusion</h2>';
-    echo "<br>";
-    echo '<div class="cont">';
-    echo "1";
-    var_dump($_POST['submit']);
-    echo "<br>";
-    var_dump($_POST['nomBranche']);
-    echo "<br>";
-    var_dump($_POST['selectBranche1']);
-    echo "<br>";
-    var_dump($_POST['selectBranche2']);
-    echo "<br>";
+<?php
+echo "<br>";
+echo '<h2>Voici le Rapport de la Fusion</h2>';
+echo "<br>";
+echo '<div class="cont">';
+echo "1";
+var_dump($_POST['submit']);
+echo "<br>";
+var_dump($_POST['nomBranche']);
+echo "<br>";
+var_dump($_POST['datalist']);
+echo "<br>";
+var_dump($_POST['datalistBranche2']);
+echo "<br>";
 
-    if(isset($_POST['submit'])){
-        // Chemin du référentiel Git
-        $repository_path = "/apache/htdocs/exalogv428/etomasso/Branche";
-        $user ="etomasso";
-        $repo_url="https://webhook:Nzc3MDM2ODM5NzQzOjKx+GyGOlxvpdcLT0yBtfmtX7QO@bitbucket.fr.exalog.net/scm/bankx/bankx-sandbox.git";
+if(isset($_POST['submit'])){
+    // Chemin du référentiel Git
+    $repository_path = "/apache/htdocs/exalogv428/etomasso/Branche";
+    $user ="etomasso";
+    $repo_url="https://webhook:Nzc3MDM2ODM5NzQzOjKx+GyGOlxvpdcLT0yBtfmtX7QO@bitbucket.fr.exalog.net/scm/bankx/bankx-sandbox.git";
 
 
     // Clone du référentiel Git
@@ -96,7 +122,7 @@
     $output_clone = shell_exec($command_clone);
     echo "<br>";
     var_dump($output_clone);
-    
+
     $repository_path .= "/bankx-sandbox";
     if (!is_dir($repository_path)){
         echo"<h2> Le répertoire cloné n'existe pas.</h2>";
@@ -108,21 +134,18 @@
     if (is_dir($repository_path . "/.git")) {
         // Basculer vers le répertoire du dépôt Git
         chdir($repository_path);
-        
+
         // Récupérer les valeurs du formulaire
-        $branch1 = $_POST['selectBranche1'];
-        $branch2 = $_POST['selectBranche2'];
+        $branch1 = $_POST['datalist'];
+        $branch2 = $_POST['datalistBranche2'];
         $nomBranche = $_POST['nomBranche'];
-            
-                    // Vérifier si la branche de destination existe déjà
+
+        // Vérifier si la branche de destination existe déjà
         $command_check_branch = "git rev-parse --quiet --verify $nomBranche";
         $output_check_branch = shell_exec($command_check_branch);
         echo "<br>";
         var_dump($output_check_branch);
 
-        
-        
-        
         if (empty($output_check_branch)) {
 
             $command_remote_branch = " git ls-remote --refs $repo_url | awk '{print $2}' | sed 's/refs\/heads\///' | sed 's/refs\/tags\///'";
@@ -132,9 +155,8 @@
             // Basculer vers la branche $branch1
             $command_checkout_branch1 = "git checkout $branch1";
             $output_checkout_branch1 = shell_exec($command_checkout_branch1);
-            
+
             echo "<br>";
-  
 
             echo "<br>";
 
@@ -147,20 +169,20 @@
             $output_check_branch2 = shell_exec($command_check_branch2);
             var_dump($output_check_branch2);
             echo "<br>";
-            
+
             $command_merge = "git merge-base $branch1 $branch2";
             $output_merge_base = shell_exec($command_merge);
             var_dump($output_merge_base);
             echo "<br>";
 
             if(!empty(trim($output_merge_base))){
-                                
-                    // Basculer vers la nouvelle branche-
-                    $command_checkout_branch = "git checkout -b $nomBranche";
+                                    
+                    // Basculer vers la nouvelle branche
+                    $command_checkout_branch = "git checkout $nomBranche";
                     $output_checkout_branch = shell_exec($command_checkout_branch);
                     var_dump($output_checkout_branch);
                     echo "<br>";
-    
+
                     $command_merge = "git merge --no-ff --no-commit $branch1 $branch2";
                     $output_merge = shell_exec($command_merge);
                     var_dump($output_merge);
@@ -209,7 +231,8 @@
     } else {
         echo "<h2>Chemin du référentiel invalide.</h2>";
     }
-    }
-    echo '</div>';
-    ?>
+}
+echo '</div>';
+?>
+
 </center>
